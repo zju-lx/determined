@@ -33,6 +33,14 @@ func Detect(slotType, agentID, visibleGPUs string, artificialSlots int) ([]devic
 		log.Infof("Rocm driver version: %s", v)
 	}
 
+	// Log detected ascend version.
+	v, err = getAscendVersion()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get ascend version: %w", err)
+	} else if v != "" {
+		log.Infof("Ascend driver version: %s", v)
+	}
+
 	// Detect devices available to the agent.
 	var detected []device.Device
 	switch {
@@ -74,6 +82,11 @@ func Detect(slotType, agentID, visibleGPUs string, artificialSlots int) ([]devic
 		detected, err = detectCPUs()
 		if err != nil {
 			return nil, err
+		}
+	case slotType == "npu":
+		detected, err = detectAscendNPUs(visibleGPUs)
+		if err != nil {
+			return nil, errors.Wrap(err, "error while gathering NPU info through npu-smi command")
 		}
 	case slotType == "auto":
 		detected, err = detectCudaGPUs(visibleGPUs)

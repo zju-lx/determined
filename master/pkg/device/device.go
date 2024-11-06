@@ -16,6 +16,8 @@ const (
 	CUDA Type = "cuda"
 	// ROCM represents an AMD GPU device.
 	ROCM Type = "rocm"
+	// NPU represents an Ascend device.
+	NPU Type = "npu"
 	// ZeroSlot represents cpu devices on agents where only GPUs are modeled.
 	ZeroSlot Type = ""
 )
